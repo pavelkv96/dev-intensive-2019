@@ -1,5 +1,8 @@
 # Built application files
 build/
+*.apk
+*.ap_
+*.aab
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -28,7 +31,6 @@ local.properties
 # Android Studio captures folder
 captures/
 
-# Keystore files
 # Uncomment the following lines if you do not want to check your keystore files in.
 *.jks
 *.keystore
@@ -38,3 +40,10 @@ google-services.json
 
 # Version control
 vcs.xml
+
+# lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+lint/reports/
