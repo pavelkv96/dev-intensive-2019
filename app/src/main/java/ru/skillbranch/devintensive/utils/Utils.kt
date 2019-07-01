@@ -11,10 +11,12 @@ object Utils {
         if (!fullName.isNullOrEmpty() && fullName.trim().isNotEmpty()) {
             val split = fullName.split(" ".toRegex(), 2)
 
-            val firstName = split[0]
+            val firstName = split[0].trim()
             var lastName = split.getOrNull(1)
             if (lastName.isNullOrEmpty()) {
                 lastName = null
+            }else{
+                lastName = lastName.trim()
             }
 
             return firstName to lastName

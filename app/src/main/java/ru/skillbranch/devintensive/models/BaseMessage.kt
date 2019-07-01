@@ -16,7 +16,7 @@ abstract class BaseMessage(
 
     companion object AbstractFactory {
         var lastId = -1
-        fun makeMassage(
+        fun makeMessage(
             from: User?,
             chat: Chat,
             date: Date = Date(),
