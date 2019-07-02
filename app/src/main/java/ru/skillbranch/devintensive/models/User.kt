@@ -12,10 +12,10 @@ data class User(
     var firstName: String?,
     var lastName: String?,
     var avatar: String?,
-    var rating: Int,
-    var respect: Int,
-    var lastVisit: String?,
-    var isOnline: Boolean
+    var rating: Int = 0,
+    var respect: Int = 0,
+    var lastVisit: Date? = Date(),
+    var isOnline: Boolean = false
 ) {
 
     /*constructor(id: String, firstName: String?, lastName: String?) :
@@ -36,7 +36,7 @@ data class User(
                 .avatar("https://avatar.png")
                 .rating(0)
                 .respect(0)
-                .lastVisit(Date().format())
+                .lastVisit(Date())
                 .isOnline(true)
                 .build()
         }
@@ -49,7 +49,7 @@ data class User(
         private var avatar: String? = null
         private var rating: Int = 0
         private var respect: Int = 0
-        private var lastVisit: String? = null
+        private var lastVisit: Date? = Date()
         private var isOnline: Boolean = false
 
         fun id(lastId: String): Builder {
@@ -82,7 +82,7 @@ data class User(
             return this
         }
 
-        fun lastVisit(lastVisit: String?): Builder {
+        fun lastVisit(lastVisit: Date?): Builder {
             this.lastVisit = lastVisit
             return this
         }
