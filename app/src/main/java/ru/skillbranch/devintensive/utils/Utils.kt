@@ -107,7 +107,7 @@ object Utils {
 
     fun getPluralForm(pluralForms: TimeUnits, count: Int): String {
         val pattern = when (pluralForms) {
-            TimeUnits.SECOND -> "секунда;секунды;секунд"
+            TimeUnits.SECOND -> "секунду;секунды;секунд"
             TimeUnits.MINUTE -> "минута;минуты;минут"
             TimeUnits.HOUR -> "час;часа;часов"
             TimeUnits.DAY -> "день;дня;дней"

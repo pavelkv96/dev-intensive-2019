@@ -38,11 +38,11 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         in (0 * SECOND)..(1 * SECOND) -> "только что"
         in (1 * SECOND)..(45 * SECOND) -> "несколько секунд"
         in (45 * SECOND)..(75 * SECOND) -> "минуту"
-        in (75 * SECOND)..(45 * MINUTE) -> "${(diffAbs / MINUTE)} ${Utils.getPluralForm(TimeUnits.MINUTE, (diffAbs/ MINUTE).toInt())}"
+        in (75 * SECOND)..(45 * MINUTE) -> TimeUnits.MINUTE.plural((diffAbs/ MINUTE).toInt())
         in (45 * MINUTE)..(75 * MINUTE) -> "час"
-        in (75 * MINUTE)..(22 * HOUR) -> "${(diffAbs / HOUR)} ${Utils.getPluralForm(TimeUnits.HOUR, (diffAbs/ HOUR).toInt())}"
+        in (75 * MINUTE)..(22 * HOUR) -> TimeUnits.HOUR.plural((diffAbs/ HOUR).toInt())
         in (22 * HOUR)..(26 * HOUR) -> "день"
-        in (26 * HOUR)..(360 * DAY) -> "${(diffAbs / DAY)} ${Utils.getPluralForm(TimeUnits.DAY, (diffAbs/ DAY).toInt())}"
+        in (26 * HOUR)..(360 * DAY) -> TimeUnits.DAY.plural((diffAbs/ DAY).toInt())
         else -> if (diff > 360 * DAY) "более года назад" else "более чем через год"
     }
 
@@ -56,5 +56,9 @@ enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+
+    fun plural(value: Int): String {
+        return "$value ${Utils.getPluralForm(this, value)}"
+    }
 }
