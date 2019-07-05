@@ -1,7 +1,5 @@
 package ru.skillbranch.devintensive.extensions
 
-import java.util.regex.Pattern
-
 /**
  *Created by Pavel on 05.07.2019.
  */
@@ -14,7 +12,4 @@ fun String.truncate(count: Int = 16): String {
     }
 }
 
-fun String.stripHtml(): String {
-    val replaceAll = Pattern.compile("<.+?>|&#?[a-z0-9]*;").matcher(this).replaceAll("")
-    return replaceAll.replace("  ", "").trimStart().trimEnd()
-}
+fun String.stripHtml() = replace("<[^>]*>".toRegex(), "").replace("\\s+".toRegex(), " ")
