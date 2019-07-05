@@ -15,6 +15,6 @@ fun String.truncate(count: Int = 16): String {
 }
 
 fun String.stripHtml(): String {
-    val replaceAll = Pattern.compile("<.+?>|&.*?;").matcher(this).replaceAll("")
-    return replaceAll.replace("  ", "")
+    val replaceAll = Pattern.compile("<.+?>|&#?[a-z0-9]*;").matcher(this).replaceAll("")
+    return replaceAll.replace("  ", "").trimStart().trimEnd()
 }
