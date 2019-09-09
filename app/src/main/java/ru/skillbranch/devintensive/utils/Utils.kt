@@ -1,124 +1,92 @@
 package ru.skillbranch.devintensive.utils
 
-import ru.skillbranch.devintensive.extensions.TimeUnits
+import android.content.Context
+import java.lang.StringBuilder
+import kotlin.math.roundToInt
 
-/**
- *Created by Pavel on 29.06.2019.
- */
 object Utils {
-    fun parseFullName(fullName: String?): Pair<String?, String?> {
+    fun parseFullName(fullName: String?): Pair<String?, String?>{
+        val parts = fullName?.trim()?.split(" ")
+        val firstName = parts?.getOrNull(0)?.ifEmpty { null }
+        val lastName = parts?.getOrNull(1)?.ifEmpty { null }
 
-        if (!fullName.isNullOrEmpty() && fullName.trim().isNotEmpty()) {
-            val split = fullName.split(" ".toRegex(), 2)
-
-            val firstName = split[0].trim()
-            var lastName = split.getOrNull(1)
-            if (lastName.isNullOrEmpty()) {
-                lastName = null
-            }else{
-                lastName = lastName.trim()
-            }
-
-            return firstName to lastName
-        }
-
-        return null to null
-    }
-
-    fun toInitials(firstName: String?, lastName: String?): String? {
-        if (firstName == null && lastName == null) {
-            return null
-        }
-
-        var firstInitial = ""
-        if (firstName != null && firstName.trim().isNotEmpty()) {
-            firstInitial = firstName.trim()[0].toString().toUpperCase()
-        }
-
-        var lastInitial = ""
-        if (lastName != null && lastName.trim().isNotEmpty()) {
-            lastInitial = lastName.trim()[0].toString().toUpperCase()
-        }
-
-        if (firstInitial.isEmpty() && lastInitial.isEmpty()) {
-            return null
-        }
-
-        return firstInitial + lastInitial
+        return firstName to lastName
     }
 
     fun transliteration(payload: String, divider: String = " "): String {
-        if (payload.trim().isEmpty()) {
-            return payload
-        }
+        val map = fillTranslitMap()
+        val builder = StringBuilder()
 
-        val list = payload.replace(" ", divider).toCharArray()
-        var transliteration = ""
+        for (char in payload.trim())
+            builder.append(getTranslChar(char, map))
 
-        for (a in list) {
-            val isUpper = a.isUpperCase()
-            var transliteration1: String = when (a.toLowerCase()) {
-                'а' -> "a"
-                'б' -> "b"
-                'в' -> "v"
-                'г' -> "g"
-                'д' -> "d"
-                'е' -> "e"
-                'ё' -> "e"
-                'ж' -> "zh"
-                'з' -> "z"
-                'и' -> "i"
-                'й' -> "i"
-                'к' -> "k"
-                'л' -> "l"
-                'м' -> "m"
-                'н' -> "n"
-                'о' -> "o"
-                'п' -> "p"
-                'р' -> "r"
-                'с' -> "s"
-                'т' -> "t"
-                'у' -> "u"
-                'ф' -> "f"
-                'х' -> "h"
-                'ц' -> "c"
-                'ч' -> "ch"
-                'ш' -> "sh"
-                'щ' -> "sh'"
-                'ъ' -> ""
-                'ы' -> "i"
-                'ь' -> ""
-                'э' -> "e"
-                'ю' -> "yu"
-                'я' -> "ya"
-                else -> "$a"
-            }
-
-            if (transliteration1.isNotEmpty() && isUpper) {
-                val first = transliteration1.first()
-                transliteration1 = transliteration1.replaceFirst(first, first.toUpperCase())
-            }
-
-            transliteration += transliteration1
-        }
-
-        return transliteration
+        return builder.toString().replace(" ", divider)
     }
 
-    fun getPluralForm(pluralForms: TimeUnits, count: Int): String {
-        val pattern = when (pluralForms) {
-            TimeUnits.SECOND -> "секунду;секунды;секунд"
-            TimeUnits.MINUTE -> "минуту;минуты;минут"
-            TimeUnits.HOUR -> "час;часа;часов"
-            TimeUnits.DAY -> "день;дня;дней"
-        }
+    private fun getTranslChar(char: Char, map: HashMap<Char, String>): String {
+        val transl  = map[char.toLowerCase()] ?: char.toString()
 
-        val forms = pattern.split(";")
-        when (count % 10) {
-            1 -> if (count % 100 != 11) return forms[0]
-            2, 3, 4 -> if (count % 100 !in 12..14) return forms[1]
-        }
+        return if (char.isUpperCase() && transl.isNotEmpty())
+            transl.capitalize()
+        else transl
+    }
 
-        return forms[2]
+    private fun fillTranslitMap(): HashMap<Char, String> {
+        val map = hashMapOf<Char, String>()
+        map['а'] = "a"
+        map['б'] = "b"
+        map['в'] = "v"
+        map['г'] = "g"
+        map['д'] = "d"
+        map['е'] = "e"
+        map['ё'] = "e"
+        map['ж'] = "zh"
+        map['з'] = "z"
+        map['и'] = "i"
+        map['й'] = "i"
+        map['к'] = "k"
+        map['л'] = "l"
+        map['м'] = "m"
+        map['н'] = "n"
+        map['о'] = "o"
+        map['п'] = "p"
+        map['р'] = "r"
+        map['с'] = "s"
+        map['т'] = "t"
+        map['у'] = "u"
+        map['ф'] = "f"
+        map['х'] = "h"
+        map['ц'] = "c"
+        map['ч'] = "ch"
+        map['ш'] = "sh"
+        map['щ'] = "sh'"
+        map['ъ'] = ""
+        map['ы'] = "i"
+        map['ь'] = ""
+        map['э'] = "e"
+        map['ю'] = "yu"
+        map['я'] = "ya"
+
+        return map
+    }
+
+    fun toInitials(firstName: String?, lastName: String?): String? {
+        val name = firstName.orEmpty().trim().getOrNull(0)?.toUpperCase()
+        val surname = lastName.orEmpty().trim().getOrNull(0)?.toUpperCase()
+        val firstInit = name?.toString() ?: ""
+        val secondInit = surname?.toString() ?: ""
+        return "$firstInit$secondInit".ifEmpty { null }
+    }
+
+    fun convertPxToDp(context: Context, px: Int): Int {
+        return (px / context.resources.displayMetrics.density).roundToInt()
+    }
+
+    fun convertDpToPx(context: Context, dp: Float): Int {
+        return (dp * context.resources.displayMetrics.density).roundToInt()
+    }
+
+    fun convertSpToPx(context: Context, sp: Int): Int {
+        return sp * context.resources.displayMetrics.scaledDensity.roundToInt()
     }
 }
